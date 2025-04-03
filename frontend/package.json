@@ -9,7 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.3",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-yaml": "^6.1.2",
     "@shadcn/ui": "^0.0.4",
+    "@uiw/react-codemirror": "^4.23.10",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
