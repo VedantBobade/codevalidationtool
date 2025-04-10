@@ -15,32 +15,39 @@ const validateScript = (scriptType, script) => {
   try {
     switch (scriptType) {
       case "jenkins":
-        return script.includes("pipeline") ? 
-          { isValid: true, message: "Valid Jenkinsfile!" } : 
-          { isValid: false, message: "Invalid Jenkinsfile format!" };
+        if (!script.includes("pipeline")) {
+          return { isValid: false, message: "Error: 'pipeline' block is missing (Jenkinsfile)." };
+        }
+        return { isValid: true, message: "Valid Jenkinsfile!" };
 
       case "github-actions":
         try {
-          YAML.parse(script);  // Validate YAML structure
+          YAML.parse(script);
           return { isValid: true, message: "Valid GitHub Actions YAML!" };
         } catch (error) {
-          return { isValid: false, message: `Invalid YAML: ${error.message}` };
+          return { 
+            isValid: false, 
+            message: `Invalid YAML at line ${error.linePos[0].line}: ${error.message}` 
+          };
         }
 
       case "terraform":
       case "bicep":
         try {
-          JSON5.parse(script); // Validate JSON structure
+          JSON5.parse(script);
           return { isValid: true, message: `Valid ${scriptType} script!` };
         } catch (error) {
-          return { isValid: false, message: `Invalid JSON: ${error.message}` };
+          return { 
+            isValid: false, 
+            message: `Invalid JSON at position ${error.at}: ${error.message}` 
+          };
         }
 
       default:
         return { isValid: false, message: "Unknown script type." };
     }
   } catch (error) {
-    return { isValid: false, message: `Error: ${error.message}` };
+    return { isValid: false, message: `Unexpected Error: ${error.message}` };
   }
 };
 
